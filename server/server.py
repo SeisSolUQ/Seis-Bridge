@@ -28,7 +28,7 @@ class SeisSol(umbridge.Model):
         subprocess.run(["rm", "-rf", "simulation"])
         subprocess.run(["mkdir", "simulation"])
         subprocess.run(["ls", "-la", "simulation"])
-        subprocess.run(["mpirun", "--bind-to", "none", "-n", "4", "./launch.sh", "./SeisSol_Release_ssm_86_cuda_6_elastic", "parameters.par"])
+        subprocess.run(["/home/tools/bin/SeisSol_Release_ssm_86_cuda_4_elastic", "parameters.par"])
 
         m = [-misfits.misfit("simulation", "reference", "tpv5", i)**2 for i in [1, 2, 3, 4, 5]]
 

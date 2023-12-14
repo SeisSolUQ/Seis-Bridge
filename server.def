@@ -1,0 +1,19 @@
+Bootstrap: localimage
+From: seissol.sif
+Stage: build
+
+%post
+  DEBIAN_FRONTEND="noninteractive" 
+  apt-get update
+  apt-get install -y python3-pip
+  pip install umbridge numpy scipy pandas jinja2
+
+%files
+./server/server.py /home/tools/bin/server.py
+./server/misfits.py /home/tools/bin/misfits.py
+
+%startscript
+  python3 /home/tools/bin/server.py
+
+%runscript
+  python3 /home/tools/bin/server.py
