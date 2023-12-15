@@ -31,9 +31,9 @@ class SeisSol(umbridge.Model):
         subprocess.run(["ls", "-la", "simulation"])
         subprocess.run("mpirun -n 4 -bind-to none seissol-launch SeisSol_Release_ssm_86_cuda_4_elastic parameters.par", shell=True)
 
-        m = [-misfits.misfit("simulation", "reference", "tpv5", i) for i in [1, 2, 3, 4, 5]]
+        m = [misfits.misfit("simulation", "reference", "tpv5", i) for i in [1, 2, 3, 4, 5]]
 
-        output = [[np.sum(m)**2], m]
+        output = [[-np.sum(m)**2], m]
         return output
 
     def supports_evaluate(self):
