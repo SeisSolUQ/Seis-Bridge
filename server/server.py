@@ -1,5 +1,6 @@
 import jinja2
 import misfits
+import numpy as np
 import subprocess
 import umbridge
 
@@ -14,7 +15,7 @@ class SeisSol(umbridge.Model):
         return [3]
 
     def get_output_sizes(self, config):
-        return [5]
+        return [1, 5]
 
     def __call__(self, parameters, config):
         print(parameters)
@@ -28,11 +29,12 @@ class SeisSol(umbridge.Model):
         subprocess.run(["rm", "-rf", "simulation"])
         subprocess.run(["mkdir", "simulation"])
         subprocess.run(["ls", "-la", "simulation"])
-        subprocess.run(["/home/tools/bin/SeisSol_Release_ssm_86_cuda_4_elastic", "parameters.par"])
+        subprocess.run("mpirun -n 4 -bind-to none seissol-launch SeisSol_Release_ssm_86_cuda_4_elastic parameters.par", shell=True)
 
-        m = [-misfits.misfit("simulation", "reference", "tpv5", i)**2 for i in [1, 2, 3, 4, 5]]
+        m = [-misfits.misfit("simulation", "reference", "tpv5", i) for i in [1, 2, 3, 4, 5]]
 
-        return [m]
+        output = [[np.sum(m)**2], m]
+        return output
 
     def supports_evaluate(self):
         return True

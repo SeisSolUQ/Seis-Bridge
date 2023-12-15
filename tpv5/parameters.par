@@ -38,13 +38,13 @@ PPFileName = 'mesh/faultreceivers.dat'
 /
  
 &MeshNml
-MeshFile = 'mesh/mesh_5000.puml.h5'
+MeshFile = 'mesh/mesh_500.puml.h5'
 meshgenerator = 'PUML' 
 /
 
 &Discretization
 CFL = 0.5 
-ClusteredLTS = 1 
+ClusteredLTS = 2 
 /
 
 &Output

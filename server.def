@@ -12,6 +12,11 @@ Stage: build
 ./server/server.py /home/tools/bin/server.py
 ./server/misfits.py /home/tools/bin/misfits.py
 
+%environment
+  export PATH=/home/tools/bin:$PATH
+  export OMP_PLACES="cores(8)"
+  export OMP_NUM_THREADS=8
+
 %startscript
   python3 /home/tools/bin/server.py
 
