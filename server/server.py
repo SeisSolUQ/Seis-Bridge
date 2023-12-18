@@ -4,6 +4,17 @@ import numpy as np
 import subprocess
 import umbridge
 
+def gpu_available():
+    # Hard coded for now, until I find a better way to automatically check,
+    # whether a GPU is available.
+    return True
+
+def seissol_command():
+    if gpu_available():
+        return "mpirun -n 4 -bind-to none seissol-launch SeisSol_Release_ssm_86_cuda_4_elastic parameters.par"
+    else:
+        return "mpirun -n 4 SeisSol_Release_shsw_elastic parameters.par"
+
 class SeisSol(umbridge.Model):
 
     def __init__(self):
