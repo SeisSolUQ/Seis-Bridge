@@ -83,13 +83,17 @@ export PARMETIS_DIR=/home/tools
 cd /home/tools
 git clone --recursive https://github.com/SeisSol/SeisSol.git 
 cd SeisSol && git submodule update --init 
-mkdir build_cpu && cd build_cpu 
-CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=auto -DASAGI=ON -DNETCDF=ON -DORDER=4 -DHOST_ARCH=hsw -DCMAKE_BUILD_TYPE=Release -DPRECISION=single
-make -j$(nproc) && cp SeisSol* /home/tools/bin 
-cd .. && mkdir build_gpu && cd build_gpu 
-export CXXFLAGS=-isystem\ /usr/lib/llvm-14/lib/clang/14.0.0/include
-CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=auto -DASAGI=ON -DNETCDF=ON -DORDER=4 -DHOST_ARCH=hsw -DDEVICE_ARCH=sm_86 -DDEVICE_BACKEND=cuda -DCMAKE_BUILD_TYPE=Release -DPRECISION=single 
-make -j$(nproc) && cp SeisSol* /home/tools/bin && cp seissol-launch /home/tools/bin
+for o in 4 5 6; do
+  mkdir -p build_cpu && cd build_cpu 
+  CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=auto -DASAGI=ON -DNETCDF=ON -DORDER=${o} -DHOST_ARCH=hsw -DCMAKE_BUILD_TYPE=Release -DPRECISION=single
+  make -j$(nproc) && cp SeisSol* /home/tools/bin 
+  cd .. 
+  mkdir -p build_gpu && cd build_gpu 
+  export CXXFLAGS=-isystem\ /usr/lib/llvm-14/lib/clang/14.0.0/include
+  CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=auto -DASAGI=ON -DNETCDF=ON -DORDER=${o} -DHOST_ARCH=hsw -DDEVICE_ARCH=sm_86 -DDEVICE_BACKEND=cuda -DCMAKE_BUILD_TYPE=Release -DPRECISION=single 
+  make -j$(nproc) && cp SeisSol* /home/tools/bin && cp seissol-launch /home/tools/bin
+  cd ..
+done
 
 %environment
   export PATH=/home/tools/bin:$PATH
