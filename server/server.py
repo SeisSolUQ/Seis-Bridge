@@ -9,11 +9,11 @@ def gpu_available():
     # whether a GPU is available.
     return True
 
-def seissol_command():
+def seissol_command(order=4):
     if gpu_available():
-        return "mpirun -n 4 -bind-to none seissol-launch SeisSol_Release_ssm_86_cuda_4_elastic parameters.par"
+        return f"mpirun -n 4 -bind-to none seissol-launch SeisSol_Release_ssm_86_cuda_{order}_elastic parameters.par"
     else:
-        return "mpirun -n 4 SeisSol_Release_shsw_elastic parameters.par"
+        return f"mpirun -n 4 SeisSol_Release_shsw_{order}elastic parameters.par"
 
 class SeisSol(umbridge.Model):
 
@@ -29,7 +29,11 @@ class SeisSol(umbridge.Model):
         return [1, 5]
 
     def __call__(self, parameters, config):
-        print(parameters)
+        if config["order"]:
+            o = config["order"]
+        else:
+            o = 4
+        print(o)
         environment = jinja2.Environment(loader=jinja2.FileSystemLoader("."))
         template = environment.get_template("fault_template.yaml")
         content = template.render(traction_left=parameters[0][0], traction_middle=parameters[0][1], traction_right=parameters[0][2])
@@ -40,7 +44,7 @@ class SeisSol(umbridge.Model):
         subprocess.run(["rm", "-rf", "simulation"])
         subprocess.run(["mkdir", "simulation"])
         subprocess.run(["ls", "-la", "simulation"])
-        subprocess.run("mpirun -n 4 -bind-to none seissol-launch SeisSol_Release_ssm_86_cuda_4_elastic parameters.par", shell=True)
+        subprocess.run(seissol_command(o), shell=True)
 
         m = [misfits.misfit("simulation", "reference", "tpv5", i) for i in [1, 2, 3, 4, 5]]
 
