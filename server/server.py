@@ -7,13 +7,14 @@ import umbridge
 def gpu_available():
     # Hard coded for now, until I find a better way to automatically check,
     # whether a GPU is available.
-    return True
+    # return True
+    return False
 
 def seissol_command(order=4):
     if gpu_available():
         return f"mpirun -n 4 -bind-to none seissol-launch SeisSol_Release_ssm_86_cuda_{order}_elastic parameters.par"
     else:
-        return f"mpirun -n 4 SeisSol_Release_shsw_{order}elastic parameters.par"
+        return f"mpirun -n 4 SeisSol_Release_shsw_{order}_elastic parameters.par"
 
 class SeisSol(umbridge.Model):
 
