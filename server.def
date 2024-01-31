@@ -6,7 +6,7 @@ Stage: build
   DEBIAN_FRONTEND="noninteractive" 
   apt-get update
   apt-get install -y python3-pip
-  pip install umbridge numpy scipy pandas jinja2
+  pip install umbridge numpy scipy pandas jinja2 mpi4py
 
 %files
 ./server/server.py /home/tools/bin/server.py
@@ -14,8 +14,8 @@ Stage: build
 
 %environment
   export PATH=/home/tools/bin:$PATH
-  export OMP_PLACES="cores(8)"
-  export OMP_NUM_THREADS=8
+  export OMP_PLACES="cores(54)"
+  export OMP_NUM_THREADS=54
 
 %startscript
   python3 /home/tools/bin/server.py

@@ -38,7 +38,7 @@ PPFileName = 'mesh/faultreceivers.dat'
 /
  
 &MeshNml
-MeshFile = 'mesh/mesh_500.puml.h5'
+MeshFile = 'mesh/mesh_1000.puml.h5'
 meshgenerator = 'PUML' 
 /
 
@@ -48,7 +48,7 @@ ClusteredLTS = 2
 /
 
 &Output
-OutputFile = 'simulation/tpv5'
+OutputFile = '{{ output_dir }}/tpv5'
 
 WaveFieldOutput = 0
 ioutputmask = 0 0 0 0 0 0 0 0 0

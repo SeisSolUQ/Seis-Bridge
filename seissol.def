@@ -1,5 +1,6 @@
 Bootstrap: localimage
-From: cuda.sif
+#From: cuda.sif
+From: mpi.sif
 Stage: build
 
 %post
@@ -9,7 +10,6 @@ DEBIAN_FRONTEND=noninteractive
 export PATH=/home/tools/bin:$PATH
 export PKG_CONFIG_PATH=/home/tools/lib/pkgconfig:$PKG_CONFIG_PATH
 cd /tmp
-ls -la
 
 echo "Build HDF5"
 wget --progress=bar:force:noscroll https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.11/src/hdf5-1.10.11.tar.bz2 
@@ -85,14 +85,14 @@ git clone --recursive https://github.com/SeisSol/SeisSol.git
 cd SeisSol && git submodule update --init 
 for o in 4 5 6; do
   mkdir -p build_cpu && cd build_cpu 
-  CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=auto -DASAGI=ON -DNETCDF=ON -DORDER=${o} -DHOST_ARCH=hsw -DCMAKE_BUILD_TYPE=Release -DPRECISION=single
+  CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=auto -DASAGI=ON -DNETCDF=ON -DORDER=${o} -DHOST_ARCH=skx -DCMAKE_BUILD_TYPE=Release -DPRECISION=single
   make -j$(nproc) && cp SeisSol* /home/tools/bin 
   cd .. 
-  mkdir -p build_gpu && cd build_gpu 
-  export CXXFLAGS=-isystem\ /usr/lib/llvm-14/lib/clang/14.0.0/include
-  CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=auto -DASAGI=ON -DNETCDF=ON -DORDER=${o} -DHOST_ARCH=hsw -DDEVICE_ARCH=sm_86 -DDEVICE_BACKEND=cuda -DCMAKE_BUILD_TYPE=Release -DPRECISION=single 
-  make -j$(nproc) && cp SeisSol* /home/tools/bin && cp seissol-launch /home/tools/bin
-  cd ..
+  #mkdir -p build_gpu && cd build_gpu 
+  #export CXXFLAGS=-isystem\ /usr/lib/llvm-14/lib/clang/14.0.0/include
+  #CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=auto -DASAGI=ON -DNETCDF=ON -DORDER=${o} -DHOST_ARCH=skx -DDEVICE_ARCH=sm_86 -DDEVICE_BACKEND=cuda -DCMAKE_BUILD_TYPE=Release -DPRECISION=single 
+  #make -j$(nproc) && cp SeisSol* /home/tools/bin && cp seissol-launch /home/tools/bin
+  #cd ..
 done
 
 %environment
