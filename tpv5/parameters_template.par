@@ -7,7 +7,7 @@ MaterialFileName = 'material.yaml'
 
 &DynamicRupture
 FL = 16 
-ModelFileName = 'fault_chain.yaml'
+ModelFileName = '{{ output_dir }}/fault_chain.yaml'
 
 XRef = 0.0 
 YRef = -1.0

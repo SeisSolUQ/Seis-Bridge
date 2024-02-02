@@ -1,10 +1,11 @@
+import hashlib
 import jinja2
 import misfits
 import numpy as np
 import os
 import subprocess
-import umbridge
 import sys
+import umbridge
 
 
 def gpu_available():
@@ -14,11 +15,11 @@ def gpu_available():
     return False
 
 
-def seissol_command(ranks=4, order=4):
+def seissol_command(run_id="", ranks=4, order=4):
     if gpu_available():
         return f"mpirun -n {ranks} -bind-to none seissol-launch SeisSol_Release_ssm_86_cuda_{order}_elastic parameters.par"
     else:
-        return f"ibrun -n {ranks} apptainer run ../seissol.sif SeisSol_Release_sskx_{order}_elastic parameters.par"
+        return f"ibrun -n {ranks} apptainer run ../seissol.sif SeisSol_Release_sskx_{order}_elastic {run_id}/parameters.par"
 
 
 class SeisSol(umbridge.Model):
@@ -33,12 +34,18 @@ class SeisSol(umbridge.Model):
     def get_output_sizes(self, config):
         return [1, 5]
 
-    def prepare_filesystem(parameters, config):
-        param_conf_string = str((parameters, config))
-        print(param_conf_string)
-        h = hash(param_conf_string) & (2**32 - 1)
-        run_id = f"simulation_{h:x}"
+    def prepare_filesystem(self, parameters, config):
+        param_conf_string = str((parameters, config)).encode("utf-8")
+        print(param_conf_string) 
+
+        m = hashlib.md5()
+        m.update(param_conf_string)
+        h = m.hexdigest()
+        run_id = f"simulation_{h}"
         print(run_id)
+
+        subprocess.run(["rm", "-rf", run_id])
+        subprocess.run(["mkdir", run_id])
         environment = jinja2.Environment(loader=jinja2.FileSystemLoader("."))
         fault_template = environment.get_template("fault_template.yaml")
         fault_content = fault_template.render(
@@ -46,17 +53,16 @@ class SeisSol(umbridge.Model):
             traction_middle=parameters[0][1],
             traction_right=parameters[0][2],
         )
-        with open("fault_chain.yaml", "w+") as fault_file:
+        with open(os.path.join(run_id, "fault_chain.yaml"), "w+") as fault_file:
             fault_file.write(fault_content)
         parameter_template = environment.get_template("parameters_template.par")
         parameter_content = parameter_template.render(output_dir=run_id)
-        with open("parameters.par", "w+") as parameter_file:
+        with open(os.path.join(run_id, "parameters.par"), "w+") as parameter_file:
             parameter_file.write(parameter_content)
 
-        subprocess.run(["rm", "-rf", run_id])
-        subprocess.run(["mkdir", run_id])
+        return run_id
 
-    def prepare_env():
+    def prepare_env(self):
         my_env = os.environ.copy()
         my_env["MV2_ENABLE_AFFINITY"] = "0"
         my_env["MV2_HOMOGENEOUS_CLUSTER"] = "1"
@@ -71,17 +77,19 @@ class SeisSol(umbridge.Model):
     def __call__(self, parameters, config):
         if not config["order"]:
             config["order"] = 4
-        prepare_filesystem(parameters, config)
+        run_id = self.prepare_filesystem(parameters, config)
 
-        command = seissol_command(self.ranks, o)
+        command = seissol_command(run_id, self.ranks, config["order"])
         print(command)
-        my_env = prepare_env()
+        my_env = self.prepare_env()
+        sys.stdout.flush()
         result = subprocess.run(command, shell=True, env=my_env)
         result.check_returncode()
 
         m = [misfits.misfit(run_id, "reference", "tpv5", i) for i in [1, 2, 3, 4, 5]]
 
         output = [[-np.sum(m) ** 2], m]
+        print(output)
         return output
 
     def supports_evaluate(self):
