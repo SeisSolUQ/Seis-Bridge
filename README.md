@@ -3,7 +3,8 @@
 2. `apptainer build seissol.sif seissol.def`
 
 # Test performance
-`OMP_NUM_THREADS=54 apptainer run seissol.sif SeisSol_proxy_Release_sskx_6_elastic 10000 10 all`
+On Frontera:
+`OMP_NUM_THREADS=54 apptainer run seissol.sif SeisSol_proxy_Release_sskx_6_elastic 100000 10 all`
 
 # Prepare mesh
 1. `cd tpv5/mesh`
@@ -34,8 +35,10 @@ export PORT=4242
 
 # Further info
 The server takes three arguments: the pre-stress in the three square patches.
-SeisSol records the wave field at five receivers.
-The server returns the L2 norm between a reference solution and the simulation 
-result at these 5 receivers.
+SeisSol records the wave field at five receivers.  The server returns the L2 norm 
+between a reference solution and the simulation result at these 5 receivers.  
 Furthermore, the server returns the sum of the misfits squared, which can be a 
 first candidate for the logLikelihood.
+
+To adapt the server to your needs, adjust `parameters_template.par` and `fault_template.yaml` 
+accordingly. We use `jinja2` syntax here.

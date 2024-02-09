@@ -1,4 +1,6 @@
 Bootstrap: localimage
+# If you plan to run SeisSol on a GPU cluster, use cuda.sif as base image (only for nvidia).
+# Otherwise, use mpi.sif
 #From: cuda.sif
 From: mpi.sif
 Stage: build
