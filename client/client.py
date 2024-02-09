@@ -1,6 +1,8 @@
 import argparse
 import itertools
 import multiprocessing as mp
+import numpy as np
+import os
 import time
 import umbridge
 
@@ -20,17 +22,23 @@ if __name__ == "__main__":
                         print("Server not available")
                         time.sleep(10)
 
-        def eval_um_model(traction_left, traction_middle):
-                config = {"order": 6}
-                return model([[traction_left * 1e6, traction_middle * 1e6, 62e6]], config)
+        def eval_um_model(traction_left, traction_middle, traction_right):
+                np.random.seed(int.from_bytes(os.urandom(4), byteorder='little'))
+                wait_time = np.random.rand() * 10
+                print(f"Delay submission by {wait_time} seconds.")
+                time.sleep(wait_time)
+                
+                config = {"order": 4}
+                return model([[traction_left * 1e6, traction_middle * 1e6, traction_right * 1e6]], config)
 
         start_time = time.time() 
         tractions_middle = [81.2, 81.3, 81.4, 81.5, 81.6, 81.7, 81.8, 81.9, 82.0, 82.1]
-        tractions_left = [78.0, 79.0, 80.0, 81.0, 82.0, 83.0]
-        arguments = [a for a in itertools.product(tractions_left, tractions_middle)]
+        tractions_left = [78.0, 79.0, 80.0]
+        tractions_right = [61.0, 62.0, 63.0]
+        arguments = [a for a in itertools.product(tractions_left, tractions_middle, tractions_right)]
         number_of_models = len(arguments)
         print(f"Evaluate {number_of_models} in parallel")
-        with mp.Pool(number_of_models) as p:
+        with mp.Pool(90) as p:
                 result = p.starmap(eval_um_model, arguments)
                 print(result)
         end_time = time.time()
