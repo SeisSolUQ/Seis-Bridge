@@ -24,13 +24,13 @@ def receiver_difference(simulation, reference):
     assert (simulation.columns == reference.columns).all()
 
     misfit = 0
-    time = reference["Time"]
+    time = simulation["Time"]
     for q in ["v1", "v2", "v3"]:
-        interpolator = sp_int.interp1d(simulation["Time"], simulation[q])
+        interpolator = sp_int.interp1d(reference["Time"], reference[q])
         q_interpolated = interpolator(time)
-        q = reference[q]
+        q = simulation[q]
         diff = np.sqrt(np.trapz((q - q_interpolated) ** 2, time))
-        norm = np.sqrt(np.trapz(q**2, time))
+        norm = np.sqrt(np.trapz(q_interpolated**2, time))
         misfit += diff / norm / 3.0
     return misfit
 

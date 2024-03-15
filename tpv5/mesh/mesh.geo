@@ -48,17 +48,17 @@ Printf("%f", lc_nucl);
 
 Fault_length = 30e3;
 Fault_width = 15e3;
-Fault_dip = 90*Pi/180.;
+Fault_dip = 90 * Pi/180.;
 
 // Nucleation in X,Z local coordinates
 X_nucl = 0e3;
-Width_nucl = 0.5*Fault_width;
+Width_nucl = 0.5 * Fault_width;
 R_nucl = 1.5e3;
 
 Xmax = 30e3;
 Xmin = -Xmax;
-Ymin = -Xmax +  0.5 * Fault_width  *Cos(Fault_dip);
-Ymax =  Xmax + 0.5 * Fault_width  *Cos(Fault_dip);
+Ymin = -Xmax + 0.5 * Fault_width * Cos(Fault_dip);
+Ymax =  Xmax + 0.5 * Fault_width * Cos(Fault_dip);
 Zmin = -Xmax;
 
 // Create the Volume
@@ -75,10 +75,10 @@ Plane Surface(1) = {5};
 Extrude {0,0, Zmin} { Surface{1}; }
 
 // Create the fault
-Point(100) = {-0.5*Fault_length, Fault_width  *Cos(Fault_dip), -Fault_width  *Sin(Fault_dip), lc};
+Point(100) = {-0.5*Fault_length, Fault_width * Cos(Fault_dip), -Fault_width * Sin(Fault_dip), lc};
 Point(101) = {-0.5*Fault_length, 0, 0e3, lc};
 Point(102) = {0.5*Fault_length, 0,  0e3, lc};
-Point(103) = {0.5*Fault_length, Fault_width  *Cos(Fault_dip), -Fault_width  *Sin(Fault_dip), lc};
+Point(103) = {0.5*Fault_length, Fault_width * Cos(Fault_dip), -Fault_width * Sin(Fault_dip), lc};
 Line(100) = {100, 101};
 Line(101) = {101, 102};
 Line{101} In Surface{1};
@@ -86,24 +86,11 @@ Line(102) = {102, 103};
 Line(103) = {103, 100};
 
 // Create nucleation patch
-/*
-Point(200) = {X_nucl, Width_nucl*Cos(Fault_dip), -Width_nucl  *Sin(Fault_dip), lc_nucl};
-Point(201) = {X_nucl, (Width_nucl + R_nucl) * Cos(Fault_dip), -(Width_nucl+R_nucl)  *Sin(Fault_dip), lc_nucl};
-Point(202) = {X_nucl + R_nucl, Width_nucl*Cos(Fault_dip), -Width_nucl  *Sin(Fault_dip), lc_nucl};
-Point(203) = {X_nucl, (Width_nucl - R_nucl) * Cos(Fault_dip), -(Width_nucl-R_nucl)  *Sin(Fault_dip), lc_nucl};
-Point(204) = {X_nucl - R_nucl, Width_nucl*Cos(Fault_dip), -Width_nucl  *Sin(Fault_dip), lc_nucl};
-Circle(200) = {201,200,202};
-Circle(201) = {202,200,203};
-Circle(202) = {203,200,204};
-Circle(203) = {204,200,201};
-Curve Loop(204) = {200,201,202,203};
-Plane Surface(200) = {204};
-*/
 
-Point(201) = {X_nucl + R_nucl , (Width_nucl + R_nucl) * Cos(Fault_dip), -(Width_nucl+R_nucl)  *Sin(Fault_dip), lc_nucl};
-Point(202) = {X_nucl + R_nucl , (Width_nucl - R_nucl) * Cos(Fault_dip), -(Width_nucl-R_nucl)  *Sin(Fault_dip), lc_nucl};
-Point(203) = {X_nucl - R_nucl , (Width_nucl - R_nucl) * Cos(Fault_dip), -(Width_nucl-R_nucl)  *Sin(Fault_dip), lc_nucl};
-Point(204) = {X_nucl - R_nucl , (Width_nucl + R_nucl) * Cos(Fault_dip), -(Width_nucl+R_nucl)  *Sin(Fault_dip), lc_nucl};
+Point(201) = {X_nucl + R_nucl , (Width_nucl + R_nucl) * Cos(Fault_dip), -(Width_nucl+R_nucl) * Sin(Fault_dip), lc_nucl};
+Point(202) = {X_nucl + R_nucl , (Width_nucl - R_nucl) * Cos(Fault_dip), -(Width_nucl-R_nucl) * Sin(Fault_dip), lc_nucl};
+Point(203) = {X_nucl - R_nucl , (Width_nucl - R_nucl) * Cos(Fault_dip), -(Width_nucl-R_nucl) * Sin(Fault_dip), lc_nucl};
+Point(204) = {X_nucl - R_nucl , (Width_nucl + R_nucl) * Cos(Fault_dip), -(Width_nucl+R_nucl) * Sin(Fault_dip), lc_nucl};
 Line(200) = {201, 202};
 Line(201) = {202, 203};
 Line(202) = {203, 204};
@@ -157,7 +144,6 @@ Background Field = 7;
 
 Physical Surface(101) = {1};
 Physical Surface(103) = {100,200};
-// This ones are read from the gui
 Physical Surface(105) = {14,18,22,26,27};
 
 Physical Volume(1) = {1};

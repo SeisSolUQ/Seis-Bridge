@@ -7,7 +7,7 @@ Stage: build
 
 %post
 ldconfig
-mkdir -p /home/tools
+mkdir -p /home/tools/bin
 DEBIAN_FRONTEND=noninteractive
 export PATH=/home/tools/bin:$PATH
 export PKG_CONFIG_PATH=/home/tools/lib/pkgconfig:$PKG_CONFIG_PATH
@@ -88,7 +88,7 @@ cd SeisSol && git submodule update --init
 for o in 4 5 6; do
   mkdir -p build_cpu && cd build_cpu 
   CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=auto -DASAGI=ON -DNETCDF=ON -DORDER=${o} -DHOST_ARCH=skx -DCMAKE_BUILD_TYPE=Release -DPRECISION=single
-  make -j$(nproc) && cp SeisSol* /home/tools/bin 
+  make -j$(nproc) && cp SeisSol* /home/tools/bin/
   cd .. 
   #mkdir -p build_gpu && cd build_gpu 
   #export CXXFLAGS=-isystem\ /usr/lib/llvm-14/lib/clang/14.0.0/include

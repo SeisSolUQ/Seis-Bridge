@@ -1,5 +1,5 @@
 &equations
-MaterialFileName = 'material.yaml'
+MaterialFileName = '{{ output_dir }}/material.yaml'
 /
 
 &IniCondition
