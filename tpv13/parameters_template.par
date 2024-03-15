@@ -1,0 +1,83 @@
+&equations
+MaterialFileName = '{{ output_dir }}/material.yaml'
+!off-fault plasticity parameter (ignored in Plasticity=0)
+Plasticity = 1
+Tv = 0.03
+/
+
+&IniCondition
+/
+
+&DynamicRupture
+FL = 16 
+ModelFileName = '{{ output_dir }}/fault_chain.yaml'
+
+XRef = 0.0 
+YRef = -1.0
+ZRef = 0.0
+refPointMethod = 1
+
+OutputPointType = 5 
+SlipRateOutputType=1 
+/
+
+&Elementwise
+printtimeinterval_sec = 1.0 
+OutputMask = 1 1 1 1 1 1 1 1 1 1 1 
+refinement_strategy = 2
+refinement = 1
+/
+
+&Pickpoint
+printtimeinterval = 1 
+OutputMask = 1 1 1 1 
+PPFileName = 'mesh/faultreceivers.dat'
+/
+
+&SourceType
+/
+
+&SpongeLayer
+/
+ 
+&MeshNml
+MeshFile = 'mesh/mesh_1000.puml.h5'
+!MeshFile = 'mesh/mesh_500.puml.h5'
+meshgenerator = 'PUML' 
+/
+
+&Discretization
+CFL = 0.5 
+ClusteredLTS = 2 
+/
+
+&Output
+OutputFile = '{{ output_dir }}/tpv13'
+
+WaveFieldOutput = 0
+ioutputmask = 0 0 0 0 0 0 0 0 0
+
+SurfaceOutput = 1
+SurfaceOutputRefinement = 2
+SurfaceOutputInterval = 1.0
+
+pickdt = 0.005 
+RFileName = 'mesh/receivers.dat' 
+ReceiverOutputInterval = 1.0
+
+xdmfWriterBackend = 'posix'
+
+EnergyOutput = 0 
+
+Checkpoint = 0
+/
+
+&AbortCriteria
+EndTime = 4.0
+/
+
+&Analysis
+/
+
+&Debugging
+/
