@@ -82,7 +82,7 @@ class SeisSolServer(umbridge.Model):
                 result = subprocess.run(command, shell=True, env=my_env)
                 result.check_returncode()
 
-                m = [misfits.misfit(run_id, "reference_noise", self.prefix, i) for i in range(1, self.number_of_receivers+1)]
+                m = [misfits.misfit(run_id, self.reference_dir, self.prefix, i) for i in range(1, self.number_of_receivers+1)]
 
                 output = [[-np.sum(m) / self.number_of_receivers], m]
                 print(output)

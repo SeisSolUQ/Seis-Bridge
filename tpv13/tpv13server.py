@@ -14,6 +14,7 @@ class TPV13Server(server.SeisSolServer):
         self.number_of_receivers = 20
         self.number_of_parameters = 1
         self.prefix = "tpv13"
+        self.reference_dir = "reference_noise"
         super().__init__(ranks)
 
     def prepare_parameter_files(self, parameters, run_id):
