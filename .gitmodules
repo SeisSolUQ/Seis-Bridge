@@ -1,0 +1,3 @@
+[submodule "fuser/umbridge"]
+	path = fuser/umbridge
+	url = https://github.com/UM-Bridge/umbridge
