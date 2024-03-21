@@ -1,5 +1,5 @@
 &equations
-MaterialFileName = '{{ output_dir }}/material.yaml'
+MaterialFileName = 'reference/material.yaml'
 !off-fault plasticity parameter (ignored in Plasticity=0)
 Plasticity = 1
 Tv = 0.03
@@ -10,7 +10,7 @@ Tv = 0.03
 
 &DynamicRupture
 FL = 16 
-ModelFileName = '{{ output_dir }}/fault_chain.yaml'
+ModelFileName = 'reference/fault_chain.yaml'
 
 XRef = 0.0 
 YRef = -1.0
@@ -41,8 +41,7 @@ PPFileName = 'mesh/faultreceivers.dat'
 /
  
 &MeshNml
-MeshFile = 'mesh/mesh_1000.puml.h5'
-!MeshFile = 'mesh/mesh_500.puml.h5'
+MeshFile = 'mesh/mesh_500.puml.h5'
 meshgenerator = 'PUML' 
 /
 
@@ -52,7 +51,7 @@ ClusteredLTS = 2
 /
 
 &Output
-OutputFile = '{{ output_dir }}/tpv13'
+OutputFile = 'reference/tpv13'
 
 WaveFieldOutput = 0
 ioutputmask = 0 0 0 0 0 0 0 0 0
@@ -73,7 +72,7 @@ Checkpoint = 0
 /
 
 &AbortCriteria
-EndTime = 6.0
+EndTime = 10.0
 /
 
 &Analysis

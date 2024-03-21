@@ -25,14 +25,15 @@ def receiver_difference(simulation, reference):
 
     misfit = 0
     time = simulation["Time"]
+    diff = 0
+    norm = 0
     for q in ["v1", "v2", "v3"]:
         interpolator = sp_int.interp1d(reference["Time"], reference[q])
         q_interpolated = interpolator(time)
         q = simulation[q]
-        diff = np.sqrt(np.trapz((q - q_interpolated) ** 2, time))
-        norm = np.sqrt(np.trapz(q_interpolated**2, time))
-        misfit += diff / norm / 3.0
-    return misfit
+        diff += np.sqrt(np.trapz((q - q_interpolated) ** 2, time))
+        norm += np.sqrt(np.trapz(q_interpolated**2, time))
+    return  diff / norm
 
 
 def find_receiver(directory, prefix, number):

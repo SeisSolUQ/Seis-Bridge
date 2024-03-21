@@ -6,6 +6,7 @@ import os
 import subprocess
 import sys
 import umbridge
+import time
 
 
 def gpu_available():
@@ -19,7 +20,7 @@ def seissol_command(run_id="", ranks=4, order=4):
     if gpu_available():
         return f"mpirun -n {ranks} -bind-to none seissol-launch SeisSol_Release_ssm_86_cuda_{order}_elastic parameters.par"
     else:
-        return f"mpiexec.hydra -n {ranks} -machinefile $HQ_NODE_FILE apptainer run ../seissol.sif SeisSol_Release_sskx_{order}_elastic {run_id}/parameters.par"
+        return f"mpiexec.hydra -n {ranks} -machinefile $HQ_NODE_FILE ../SeisSol_Release_sskx_{order}_elastic {run_id}/parameters.par"
         #return f"ibrun apptainer run ../seissol.sif SeisSol_Release_sskx_{order}_elastic {run_id}/parameters.par"
 
 
@@ -38,8 +39,9 @@ class SeisSolServer(umbridge.Model):
     def prepare_parameter_files(self, parameters, run_id):
         pass
 
-    def prepare_filesystem(self, parameters, config):
-        param_conf_string = str((parameters, config)).encode("utf-8")
+    def prepare_filesystem(self, parameters, config):   
+        submission_time = time.ctime(time.time())
+        param_conf_string = str((parameters, config, submission_time)).encode("utf-8")
         print(param_conf_string) 
 
         m = hashlib.md5()
