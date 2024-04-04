@@ -20,7 +20,7 @@ def seissol_command(run_id="", ranks=4, order=4):
     if gpu_available():
         return f"mpirun -n {ranks} -bind-to none seissol-launch SeisSol_Release_ssm_86_cuda_{order}_elastic parameters.par"
     else:
-        return f"mpiexec.hydra -n {ranks} -machinefile $HQ_NODE_FILE ../SeisSol_Release_sskx_{order}_elastic {run_id}/parameters.par"
+        return f"mpiexec.hydra -n {ranks} -machinefile $MACHINE_FILE ../SeisSol_Release_sskx_{order}_elastic {run_id}/parameters.par"
         #return f"ibrun apptainer run ../seissol.sif SeisSol_Release_sskx_{order}_elastic {run_id}/parameters.par"
 
 
@@ -77,7 +77,7 @@ class SeisSolServer(umbridge.Model):
         print(command)
         my_env = self.prepare_env()
         sys.stdout.flush()
-        subprocess.run("cat $HQ_NODE_FILE", shell=True)
+        subprocess.run("cat $MACHINE_FILE", shell=True)
         try:
                 result = subprocess.run(command, shell=True, env=my_env)
                 result.check_returncode()
