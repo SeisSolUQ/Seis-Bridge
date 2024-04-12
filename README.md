@@ -1,19 +1,16 @@
 # Build
-1. `apptainer build mpi.sif mpi.def`
-2. `apptainer build seissol.sif seissol.def`
-
-# Test performance
-On Frontera:
-`OMP_NUM_THREADS=54 apptainer run seissol.sif SeisSol_proxy_Release_sskx_6_elastic 100000 10 all`
+Build SeisSol according to the documentation.  Copy or link the SeisSol executable
+ into this directory.  Currently, the server expects `Seissol_Release_sskx_O_elastic` 
+builds, where `O` is the order. 
 
 # Prepare mesh
-1. `cd tpv5/mesh`
+1. `cd tpv5/mesh` or `cd tpv13/mesh`
 2. `./generate_mesh.sh`
 3. Choose resolution in `parameters_template.par`
 
 # Run SeisSol
 ```
-cd tpv5
+cd tpv5 # or tpv13
 export MV2_ENABLE_AFFINITY=0
 export MV2_HOMOGENEOUS_CLUSTER=1
 export MV2_SMP_USE_CMA=0
@@ -22,23 +19,32 @@ export MV2_USE_ALIGNED_ALLOC=1
 export TACC_AFFINITY_ENABLED=1
 export OMP_NUM_THREADS=54
 export OMP_PLACES="cores(54)"
-ibrun -n 2 apptainer run ../seissol.sif SeisSol_Release_sskx_6_elastic parameters.par
+ibrun -n 2 ../SeisSol_Release_sskx_6_elastic parameters.par
 ```
 
-# Run Server
+# Query models 
 ```
 export RANKS=2
 export PORT=4242
 ```
-1. Start server in `tpv5` folder: `python3 ../server/server.py`
-2. Query results: `python3 client/client.py`
+1. Start server in the `tpvX` folder: `python3 tpvXserver.py`
+2. Query results with any UM-Bridge client.
+3. For the tpv13 example, use e.g. `python3 client/client.py`
 
 # Further info
-The server takes three arguments: the pre-stress in the three square patches.
-SeisSol records the wave field at five receivers.  The server returns the L2 norm 
+SeisSol records the wave field at all receivers.  The server returns the L2 norm 
 between a reference solution and the simulation result at these 5 receivers.  
 Furthermore, the server returns the sum of the misfits squared, which can be a 
 first candidate for the logLikelihood.
+For postprocessing the simulation result can be found in `simulation_HASH` directories.
 
-To adapt the server to your needs, adjust `parameters_template.par` and `fault_template.yaml` 
-accordingly. We use `jinja2` syntax here.
+## TPV5
+The server takes three arguments: the pre-stress in the three square patches on the fault.
+
+## TPV13
+The server takes one argument: the plastic cohesion in the bulk.
+
+## New models
+To adapt the server to your needs, adjust `fault_template.yaml`, `material_template.yaml`
+and `parameter_template.par`  accordingly. We use `jinja2` syntax here.
+
