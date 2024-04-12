@@ -9,8 +9,14 @@ builds, where `O` is the order.
 3. Choose resolution in `parameters_template.par`
 
 # Run SeisSol
+
+1. `cd tpv5 # or tpv13`
+2. `mkdir simulation && cd simulation`
+3. ` cp ../fault_template.yaml fault_chain.yaml && cp ../material_template.yaml material.yaml && cp ../parameter_template.par parameters.par`.
+4. Adapt the placeholder values, which are written in double curly brackets, e.g. `{{ placeholder }}`.
+5. Run SeisSol.
+
 ```
-cd tpv5 # or tpv13
 export MV2_ENABLE_AFFINITY=0
 export MV2_HOMOGENEOUS_CLUSTER=1
 export MV2_SMP_USE_CMA=0
@@ -19,7 +25,7 @@ export MV2_USE_ALIGNED_ALLOC=1
 export TACC_AFFINITY_ENABLED=1
 export OMP_NUM_THREADS=54
 export OMP_PLACES="cores(54)"
-ibrun -n 2 ../SeisSol_Release_sskx_6_elastic parameters.par
+ibrun ../SeisSol_Release_sskx_6_elastic parameters.par
 ```
 
 # Query models 
