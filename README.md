@@ -33,7 +33,12 @@ ibrun ../SeisSol_Release_sskx_6_elastic parameters.par
 export RANKS=2
 export PORT=4242
 ```
-1. Start server in the `tpvX` folder: `python3 tpvXserver.py`
+1. Start server in the `tpvX` folder: `python3 tpvXserver.py`. The server expects
+an environment variable `$MACHINE_FILE`, which contains the hostnames of all MPI
+ranks. It can ususally be created with `export MACHINE_FILE=$(mtkemp) && mpirun hostname > $MACHINE_FILE`.
+ This is not necessary for standalone servers, but if we want to run several servers 
+in the same slurm allocation, we need the machine file to map different instances
+to different nodes.
 2. Query results with any UM-Bridge client.
 3. For the tpv13 example, use e.g. `python3 client/client.py`
 
@@ -54,3 +59,6 @@ The server takes one argument: the plastic cohesion in the bulk.
 To adapt the server to your needs, adjust `fault_template.yaml`, `material_template.yaml`
 and `parameter_template.par`  accordingly. We use `jinja2` syntax here.
 
+# HPC
+The server currently, is built for the supercomputer Frontera, which has a particular
+MPI installation. If you have a different MPI installation, adjust `server/server.py:23`.
