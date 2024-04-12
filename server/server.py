@@ -85,12 +85,10 @@ class SeisSolServer(umbridge.Model):
                 m = [misfits.misfit(run_id, self.reference_dir, self.prefix, i) for i in range(1, self.number_of_receivers+1)]
 
                 output = [[-np.sum(m) / self.number_of_receivers], m]
-                print(output)
-                return output
         except Exception as e:
                 output = [[-1000], np.zeros(self.number_of_receivers)]
-                print(output)
-                return output
+        output = [np.nan_to_num(o, nan=-1000).tolist() for o in output]
+        return output
 
     def supports_evaluate(self):
         return True
