@@ -8,10 +8,12 @@ import umbridge
 
 if __name__ == "__main__":
         parser = argparse.ArgumentParser()
+        parser.add_argument("host", help="host", type=str)
         parser.add_argument("port", help="port", type=int)
         args = parser.parse_args()
         
-        address = f"http://localhost:{args.port}"
+        address = f"http://{args.host}:{args.port}"
+        print(address)
         server_available = False
         while not server_available:
                 try:

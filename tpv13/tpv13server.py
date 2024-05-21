@@ -43,5 +43,7 @@ class TPV13Server(server.SeisSolServer):
 if __name__ == "__main__":
     port = int(os.environ["PORT"])
     ranks = int(os.environ["RANKS"])
-    print(f"Running SeisSol server with {ranks} MPI ranks on port {port}.")
+    host = os.uname()[1]
+    print(host)
+    print(f"Running SeisSol server with {ranks} MPI ranks on {host}:{port}.")
     umbridge.serve_models([TPV13Server(ranks)], port)

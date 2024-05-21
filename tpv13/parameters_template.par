@@ -22,7 +22,7 @@ SlipRateOutputType=1
 /
 
 &Elementwise
-printtimeinterval_sec = 1.0 
+printtimeinterval_sec = 6.0 
 OutputMask = 1 1 1 1 1 1 1 1 1 1 1 
 refinement_strategy = 2
 refinement = 1
@@ -49,6 +49,13 @@ meshgenerator = 'PUML'
 &Discretization
 CFL = 0.5 
 ClusteredLTS = 2 
+LtsWiggleFactorMin = 0.6 ! Minimal wiggle factor applied to time step size. Should be > 1/rate
+LtsWiggleFactorStepsize = 0.01 ! Stepsize for wiggle factor grid search
+LtsWiggleFactorEnforceMaximumDifference = 1 ! 0 or 1: Enforces the maximum difference between neighboring clusters during wiggle factor search
+LtsMaxNumberOfClusters = 20 ! Enforces a maximal number of clusters
+LtsAutoMergeClusters = 1 !  0 or 1: Activates auto merging of clusters
+LtsAllowedRelativePerformanceLossAutoMerge = 0.1 ! Find minimal max number of clusters such that new computational cost is at most increased by this factor
+LtsAutoMergeCostBaseline = 'bestWiggleFactor' ! Baseline used for auto merging clusters. Valid options: bestWiggleFactor / maxWiggleFactor
 /
 
 &Output
