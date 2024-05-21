@@ -17,6 +17,12 @@ finished_re = re.compile("State\s+\| (\w+)")
 def cluster():
     return "lumi"
 
+def scratch_prefix():
+    if cluster() == "lumi":
+        return "/scratch/project_465000643/sebastian/Seis-Bridge/tpv13/"
+    else:
+        return ""
+
 
 def seissol_command(run_id="", ranks=4, order=4):
     if cluster() == "lumi":
@@ -62,7 +68,7 @@ class SeisSolServer(umbridge.Model):
         m = hashlib.md5()
         m.update(param_conf_string)
         h = m.hexdigest()
-        run_id = f"/scratch/project_465000643/sebastian/Seis-Bridge/tpv13/simulation_{h}"
+        run_id = f"{scratch_prefix()}simulation_{h}"
         print(run_id)
 
         subprocess.run(["rm", "-rf", run_id])
