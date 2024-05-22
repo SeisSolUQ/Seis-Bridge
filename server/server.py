@@ -105,7 +105,7 @@ class SeisSolServer(umbridge.Model):
         try:
             print("Now start SeisSol")     
             submit = subprocess.run(command, shell=True, env=my_env, capture_output=True)
-            if cluster() == "lumi"
+            if cluster() == "lumi":
                 job_id = int(job_re.search(submit.stdout.decode("utf-8")).groups()[0])
                 print(f"Waiting for hq job {job_id} to complete...")
                 while not hq_finished(job_id, my_env):
