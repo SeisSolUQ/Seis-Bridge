@@ -19,7 +19,7 @@ def cluster():
 
 def scratch_prefix():
     if cluster() == "lumi":
-        return "/scratch/project_465000643/sebastian/Seis-Bridge/tpv13/"
+        return "/scratch/project_465000643/vikas/UQ/Seis-Bridge/tpv13/"
     else:
         return ""
 
