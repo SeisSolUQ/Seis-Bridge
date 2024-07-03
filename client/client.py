@@ -34,17 +34,16 @@ if __name__ == "__main__":
                 print(result)
                 return result
 
-        start_time = time.time() 
+        start_time = time.time()
         #tractions_middle = [81.2, 81.3, 81.4, 81.5, 81.6, 81.7, 81.8, 81.9, 82.0, 82.1]
         #tractions_left = [78.0, 79.0, 80.0]
         #tractions_right = [61.0, 62.0, 63.0]
         #arguments = [a for a in itertools.product(tractions_left, tractions_middle, tractions_right)]
-        cohesions = [0.0e6, 1.0e6, 3.0e6, 5.0e6, 7.0e6]
-        orders = [4, 5, 6]
-        arguments = [a for a in itertools.product(cohesions, orders)]
+        cohesions = [0.0e9, 1.6e9, 3.0e9, 5.0e9, 7.0e9]
+        arguments = [a for a in itertools.product(cohesions)]
         number_of_models = len(arguments)
-        print(f"Evaluate {number_of_models} in parallel")
-        with mp.Pool(10) as p:
+        print(f"Evaluate models")
+        with mp.Pool(1) as p:
                 result = p.starmap(eval_um_model, arguments)
                 print(result)
         end_time = time.time()

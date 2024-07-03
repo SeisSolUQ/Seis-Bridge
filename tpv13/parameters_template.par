@@ -31,7 +31,7 @@ refinement = 1
 &Pickpoint
 printtimeinterval = 1 
 OutputMask = 1 1 1 1 
-PPFileName = 'mesh/faultreceivers.dat'
+PPFileName = '{{ mesh_dir }}/faultreceivers.dat'
 /
 
 &SourceType
@@ -41,7 +41,7 @@ PPFileName = 'mesh/faultreceivers.dat'
 /
  
 &MeshNml
-MeshFile = 'mesh/mesh_1000.puml.h5'
+MeshFile = '{{ mesh_dir }}/mesh_1000.puml.h5'
 !MeshFile = 'mesh/mesh_500.puml.h5'
 meshgenerator = 'PUML' 
 /
@@ -62,7 +62,7 @@ SurfaceOutputRefinement = 2
 SurfaceOutputInterval = 1.0
 
 pickdt = 0.005 
-RFileName = 'mesh/receivers.dat' 
+RFileName = '{{ mesh_dir }}/receivers.dat' 
 ReceiverOutputInterval = 1.0
 
 xdmfWriterBackend = 'posix'
