@@ -1,0 +1,74 @@
+import argparse
+import numpy as np
+import os
+import pandas as pd
+import re
+import scipy.interpolate as sp_int
+import sys
+
+
+def read_receiver(filename):
+    with open(filename) as receiver_file:
+        receiver_file.readline()
+        quantity_line = receiver_file.readline().strip()
+        header_length = 2
+        while receiver_file.readline()[0] == "#":
+            header_length += 1
+    quantity_line = quantity_line.replace('"', "")
+    quantities = quantity_line[12:].split(",")
+    receiver_df = pd.read_csv(filename, skiprows=header_length, header=None, sep="\s+")
+    receiver_df.columns = quantities
+    return receiver_df
+
+
+def receiver_difference(simulation, reference):
+    assert (simulation.columns == reference.columns).all()
+
+    misfit = 0
+    time = simulation["Time"]
+    diff = 0
+    norm = 0
+    for q in ["v1", "v2", "v3"]:
+        interpolator = sp_int.interp1d(reference["Time"], reference[q])
+        q_interpolated = interpolator(time)
+        q = simulation[q]
+        diff += np.sqrt(np.trapezoid((q - q_interpolated) ** 2, time))
+        norm += np.sqrt(np.trapezoid(q_interpolated**2, time))
+    return  diff / norm
+
+
+def find_receiver(directory, prefix, number):
+    receiver_re = re.compile(f"{prefix}-receiver-{number:05d}-(\d)+.dat")
+    for fn in os.listdir(directory):
+        if receiver_re.match(fn):
+            return os.path.join(directory, fn)
+
+
+def misfit(directory_simulation, directory_reference, prefix, number):
+    receiver_simulation = read_receiver(
+        find_receiver(directory_simulation, prefix, number)
+    )
+    receiver_reference = read_receiver(
+        find_receiver(directory_reference, prefix, number)
+    )
+    return receiver_difference(receiver_simulation, receiver_reference)
+
+
+if __name__ == "__main__":
+    directory_simulation = sys.argv[1]
+    directory_reference = sys.argv[2]
+    prefix = sys.argv[3]
+
+    sum_misfit = 0.0
+
+    for i in range(1, 21):
+        receiver_simulation = read_receiver(
+            find_receiver(directory_simulation, prefix, i)
+        )
+        receiver_reference = read_receiver(
+            find_receiver(directory_reference, prefix, i)
+        )
+
+        sum_misfit += receiver_difference(receiver_simulation, receiver_reference)
+
+    print(sum_misfit/20)

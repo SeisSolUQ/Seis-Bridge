@@ -39,11 +39,12 @@ if __name__ == "__main__":
         #tractions_left = [78.0, 79.0, 80.0]
         #tractions_right = [61.0, 62.0, 63.0]
         #arguments = [a for a in itertools.product(tractions_left, tractions_middle, tractions_right)]
-        cohesions = [0.0e9, 1.6e9, 3.0e9, 5.0e9, 7.0e9]
+        #cohesions = [0.0e6, 1.6e6, 3.0e6, 5.0e6, 7.0e6]
+        cohesions = [0.7, 0.8, 0.9, 1.0]
         arguments = [a for a in itertools.product(cohesions)]
         number_of_models = len(arguments)
         print(f"Evaluate models")
-        with mp.Pool(1) as p:
+        with mp.Pool(2) as p:
                 result = p.starmap(eval_um_model, arguments)
                 print(result)
         end_time = time.time()

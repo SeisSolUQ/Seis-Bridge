@@ -29,14 +29,14 @@ public:
 
     std::vector<std::size_t> GetOutputSizes(const json &config_json) const override
     {
-        return {20};
+        return {1};
     }
 
     std::vector<std::vector<double>> Evaluate(const std::vector<std::vector<double>> &inputs, json config) override
     {
         // Do the actual model evaluation; here we just multiply the first entry of the first input vector by two, and store the result in the output.
         // In addition, we support an artificial delay here, simulating actual work being done.
-	std::string hq_jobid = std::getenv("HQ_JOB_ID");
+	std::string hq_jobid = std::getenv("SLURM_JOB_ID");
 	std::string scratch_prefix = "/scratch/project_465000643/vikas/UQ-2/Seis-Bridge/tpv13/";
 	inja::Environment env;
 	inja::json data;
@@ -56,7 +56,6 @@ public:
 	env.write(material_temp, data, scratch_prefix + simulation + "/material.yaml");
 	env.write(parameters_temp, data, scratch_prefix + simulation + "/parameters.par");
 	
-
 	std::string cat_command = inja::render("cat << EOF > " + scratch_prefix + simulation + "/select_gpu\n", data);
 	cat_command = cat_command + "#!/bin/bash\n\n";
     	cat_command = cat_command + "export ROCR_VISIBLE_DEVICES=\\$SLURM_LOCALID\n";
@@ -75,7 +74,7 @@ public:
     	putenv("DEVICE_STACK_MEM_SIZE=4");
     	putenv("SEISSOL_FREE_CPUS_MASK=52-54,60-62,20-22,28-30,4-6,12-14,36-38,44-46");
 
-	std::string srun_command = "srun --cpu-bind=mask_cpu:${CPU_BIND} " + scratch_prefix + simulation + "/select_gpu " + scratch_prefix + "/SeisSol_Release_sgfx90a_hip_4_elastic " + scratch_prefix + simulation + "/parameters.par";
+	std::string srun_command = "srun --cpu-bind=mask_cpu:${CPU_BIND} " + scratch_prefix + simulation + "/select_gpu " + scratch_prefix + "/SeisSol_Release_sgfx90a_hip_6_elastic " + scratch_prefix + simulation + "/parameters.par";
 
 	printf("Running srun command for job: %s\n", hq_jobid.c_str());
 	printf("Input is: %f\n", inputs[0][0]);
@@ -83,7 +82,25 @@ public:
 	system(srun_command.c_str());
 	std::string file_name = hq_jobid;
 
-	std::vector<double> output(20,0.0);	
+	double output;
+	FILE* fpipe;
+	std::string reference_dir = "reference_noise";
+	std::string prefix = "tpv13";
+
+	std::string command = "python3 " + scratch_prefix + "misfits.py " + scratch_prefix+simulation + " " + scratch_prefix+reference_dir + " " + prefix;
+	char c = 0;
+	std::string final_answer = "";
+		if(0 == (fpipe = (FILE*)popen(command.c_str(), "r")))
+	{
+		perror("popen() failed");
+	}
+	while (fread(&c, sizeof c, 1, fpipe))
+	{
+		printf("%c", c);
+		final_answer = final_answer + c;
+	}
+	pclose(fpipe);
+	output = std::stod(final_answer);
 
 	return {{output}};
     }

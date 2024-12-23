@@ -41,8 +41,8 @@ PPFileName = '{{ mesh_dir }}/faultreceivers.dat'
 /
  
 &MeshNml
-MeshFile = '{{ mesh_dir }}/mesh_1000.puml.h5'
-!MeshFile = 'mesh/mesh_500.puml.h5'
+!MeshFile = '{{ mesh_dir }}/mesh_1000.puml.h5'
+MeshFile = '{{ mesh_dir }}/mesh_500.puml.h5'
 meshgenerator = 'PUML' 
 /
 
