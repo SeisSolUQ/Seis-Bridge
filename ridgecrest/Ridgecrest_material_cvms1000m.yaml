@@ -1,0 +1,45 @@
+!Switch
+[rho, mu, lambda, Qp, Qs]: !IdentityMap
+  components:
+    - !AxisAlignedCuboidalDomainFilter
+      limits:
+        x: [420000.0, 480000.0]
+        y: [3920000.0, 3980000.0]
+        z: [-20000.0, 2000.0]
+      components: !ASAGI
+        file: /scratch1/09830/vikaskurapati/UQ/Seis-Bridge/ridgecrest/ASAGI_files/Ridgecrest_RhoMuLambdaQpQs_cvms200.nc
+        parameters: [rho, mu, lambda, Qp, Qs]
+        var: data
+    - !ASAGI
+        file: /scratch1/09830/vikaskurapati/UQ/Seis-Bridge/ridgecrest/ASAGI_files/Ridgecrest_RhoMuLambdaQpQs_cvms1000.nc
+        parameters: [rho, mu, lambda, Qp, Qs]
+        var: data
+[bulkFriction]: !ConstantMap
+  map:
+    bulkFriction: 0.7
+[plastCo]: !EvalModel
+  parameters: [plastCo_inter]
+  model: !Any
+    components:
+      - !AxisAlignedCuboidalDomainFilter
+        limits:
+          x: [420000.0, 480000.0]
+          y: [3920000.0, 3980000.0]
+          z: [-2000.0, 2000.0]
+        components: !ASAGI
+          file: /scratch1/09830/vikaskurapati/UQ/Seis-Bridge/ridgecrest/ASAGI_files/plastCo_200.nc
+          parameters: [plastCo_inter]
+          var: plastCo
+      - !ASAGI
+          file: /scratch1/09830/vikaskurapati/UQ/Seis-Bridge/ridgecrest/ASAGI_files/plastCo_1000.nc
+          parameters: [plastCo_inter]
+          var: plastCo
+  components: !LuaMap
+    returns: [plastCo]
+    function: |
+      function f (x)
+        return {
+        plastCo = 1.0*x["plastCo_inter"]
+        }
+      end
+[s_xx, s_yy, s_zz, s_xy, s_xz, s_yz]: !Include /scratch1/09830/vikaskurapati/UQ/Seis-Bridge/ridgecrest/Ridgecrest_stress.yaml

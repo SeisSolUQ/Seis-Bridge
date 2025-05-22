@@ -1,0 +1,33 @@
+!Switch
+[s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include /scratch1/09830/vikaskurapati/UQ/Seis-Bridge/ridgecrest/Ridgecrest_stress_fault.yaml
+[Tnuc_n, Tnuc_s, Tnuc_d, Tnuc2_n, Tnuc2_s, Tnuc2_d]: !Include /scratch1/09830/vikaskurapati/UQ/Seis-Bridge/ridgecrest/Ridgecrest_nucleation_stress.yaml
+[rs_a]: !LayeredModel
+  map: !AffineMap
+    matrix:
+      z0: [0.0, 0.0, 1.0]
+    translation:
+      z0: 0
+  interpolation: linear
+  parameters: [rs_a]
+  nodes:
+     10e10:   [0.02]
+     1500.0:  [0.02]
+     -4000.0: [{{ rs_a }}] # these are the 1D parameters for inversion -> range (0.004, 0.014, uniform)
+     -10e10:  [{{ rs_a }}] # these are the 1D parameters for inversion -> range (0.004, 0.014, uniform)
+[rs_sl0]: !ConstantMap
+  map:
+    rs_sl0: 0.2
+[rs_srW]: !LayeredModel
+  map: !AffineMap
+    matrix:
+      z0: [0.0, 0.0, 1.0]
+    translation:
+      z0: 0
+  interpolation: linear
+  parameters: [rs_srW]
+  nodes:
+     10e10:   [0.1]
+     1500.0:  [0.1]
+     -4000.0: [0.1]
+     -10e10:  [0.1]
+
