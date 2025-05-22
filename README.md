@@ -62,3 +62,8 @@ and `parameter_template.par`  accordingly. We use `jinja2` syntax here.
 # HPC
 The server currently, is built for the supercomputer Frontera, which has a particular
 MPI installation. If you have a different MPI installation, adjust `server/server.py:23`.
+
+# Ridgecrest C++ server
+As a lot of HPC systems do not allow manipulating their srun command to use partial resources from the allocated nodes, we write a different C++ server which is to be combined with the SLURM based load-balancer of UMBridge. This is demonstrated in the Ridgecrest C++ server in the ridgecrest folder. It is also taking care of fused simulations depending on the config. Please note that this is in a very skeletal stage, and is not automated for every situation. There are quite a few hard-coded values as per the filesystem used; more values could be added as per use in the `prepareenvironment()` method and the `prepareSimulationCase()` method needs to be modified as per the simulation case. In the simulation files, all paths are given as absolute paths, hardcoded to avoid copying the files into a new simulation folder for every query. This could be modified if necessary, but this could be very heavy on the filesystem causing slow runs during automated UQ workflows. 
+
+The mesh and ASAGI_files are not uploaded as they are very big for GitHub file storage.
