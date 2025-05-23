@@ -40,18 +40,10 @@ return std::vector<size_t>(getNumFused(config_json), 1);}
 
 		std::vector<std::vector<double>> Evaluate(const std::vector<std::vector<double>> &inputs, json config) override {
 			// Evaluate the model
-			Logger("Entered Evaluate");
 			int numFused = getNumFused(config);
-			printf("Reached point 1");
-			Logger("point 1");
 			auto simulation_data = prepareSimulationCase(inputs, config);
-			printf("Reached point 2");
-			Logger("point 2");
 			prepareEnvironment();
-			Logger("point 3");
-			printf("Reached point 3");
-
-			std::string srun_command = "ibrun ";
+			std::string srun_command = "ibrun "; // Needs modification for clusters. (TODO) Shift to cluster specific function later
 			/**
 			 * @brief Modification for location of binaries for fused- and non- fused models
 			 * 
@@ -67,11 +59,6 @@ return std::vector<size_t>(getNumFused(config_json), 1);}
 
 			printf("Running ibrun command for job: %s\n", std::get<1>(simulation_data).c_str());
 			printf("First Input is: %f\n", inputs[0][0]);
-			Logger("Point 4");
-			printf("Reached point 4");
-			Logger(srun_command);
-			system(srun_command.c_str());
-			Logger("Point 5");
 			std::string fileName = std::get<1>(simulation_data);
 			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
