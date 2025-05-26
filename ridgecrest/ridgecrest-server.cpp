@@ -23,19 +23,11 @@ class SeisSolModel : public umbridge::Model {
 
 		std::vector<std::size_t> GetInputSizes(const json &config_json) const override {
 			// Return the size of the input data
-if(config_json["order"] == "4"){
-return {1};}
-else{
-return std::vector<size_t>(getNumFused(config_json), 1);
+			return std::vector<size_t>(getNumFused(config_json), 1);
 		}
-}
 		std::vector<std::size_t> GetOutputSizes(const json &config_json) const override {
 			// Return the size of the output data
-		
-if(config_json["order"] == "4"){
-return {1};}
-else{
-return std::vector<size_t>(getNumFused(config_json), 1);}
+			return std::vector<size_t>(getNumFused(config_json), 1);}
 		}
 
 		std::vector<std::vector<double>> Evaluate(const std::vector<std::vector<double>> &inputs, json config) override {
