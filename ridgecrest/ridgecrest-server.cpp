@@ -52,8 +52,9 @@ class SeisSolModel : public umbridge::Model {
 			printf("Running ibrun command for job: %s\n", std::get<1>(simulation_data).c_str());
 			printf("First Input is: %f\n", inputs[0][0]);
 			std::string fileName = std::get<1>(simulation_data);
+			system(srun_command.c_str());
 			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
+			
 			FILE* fpipe;
 
 			std::string pythonCommand = "python3 " + scratch_prefix + "misfits.py " + std::to_string(numFused) + " " + prefix + " " + scratch_prefix + std::get<0>(simulation_data) + " " + scratch_prefix + reference_dir;
