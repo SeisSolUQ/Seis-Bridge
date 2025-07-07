@@ -82,7 +82,6 @@ class SeisSolModel : public umbridge::Model {
 					iss.ignore();
 				}
 			}
-Logger("Point 6");
 			return result;
 		}
 
