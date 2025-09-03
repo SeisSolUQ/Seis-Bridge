@@ -27,7 +27,7 @@ class SeisSolModel : public umbridge::Model {
 		}
 		std::vector<std::size_t> GetOutputSizes(const json &config_json) const override {
 			// Return the size of the output data
-			return std::vector<size_t>(getNumFused(config_json), 1);}
+			return std::vector<size_t>(getNumFused(config_json), 1);
 		}
 
 		std::vector<std::vector<double>> Evaluate(const std::vector<std::vector<double>> &inputs, json config) override {
